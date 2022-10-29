@@ -8,28 +8,24 @@ class ValueSlot extends React.Component {
     
     constructor(props) {
 	super(props);
-	this.state = {
-	    selectionState: ValueSlot.EMPTY
-	};
 	this.onClick = this.onClick.bind(this);
     }
 
-    onClick() {
-	this.setState((state) => ({
-	    selectionState: state.selectionState % 4 + 1
-	}));
+    onClick(e) {
+	e.preventDefault();
+	this.props.onClick(this.props.index, this.props.value);
     }
     
     render() {
 	let fragment = [];
-	switch (this.state.selectionState)
+	switch (this.props.selectionState)
 	{
 	    case ValueSlot.VALUE:
 	    case ValueSlot.VALUE_SELECTED:
 	    fragment.push(
 		    <text x={this.props.x} y={this.props.y} textAnchor="middle" dominantBaseline="middle" fill="black" key="text">{this.props.value}</text>
 	    );
-	    if (this.state.selectionState === ValueSlot.VALUE_SELECTED) {
+	    if (this.props.selectionState === ValueSlot.VALUE_SELECTED) {
 		fragment.push(
 		    <circle r={this.props.nStarCanvasProperties.slotCircleRadius} fill={this.props.nStarCanvasProperties.slotCircleColorSelected}
 			    cx={this.props.x} cy={this.props.y + this.props.nStarCanvasProperties.slotTapRadius + this.props.nStarCanvasProperties.slotCircleDistance} key="slotCircle" />
@@ -39,7 +35,7 @@ class ValueSlot extends React.Component {
 	    case ValueSlot.EMPTY:
 	    case ValueSlot.EMPTY_SELECTED:
 	    fragment.push(
-		<circle r={this.props.nStarCanvasProperties.slotCircleRadius} fill={this.state.selectionState === ValueSlot.EMPTY
+		<circle r={this.props.nStarCanvasProperties.slotCircleRadius} fill={this.props.selectionState === ValueSlot.EMPTY
 										    ? this.props.nStarCanvasProperties.slotCircleColor
 										    : this.props.nStarCanvasProperties.slotCircleColorSelected}
 			cx={this.props.x} cy={this.props.y} key="slotCircle" />
@@ -50,7 +46,7 @@ class ValueSlot extends React.Component {
 	}
 	fragment.push(
 	    <circle r={this.props.nStarCanvasProperties.slotTapRadius} fill="blue" fillOpacity={0}
-		    cx={this.props.x} cy={this.props.y} onClick={this.onClick} style={{cursor: "pointer"}} key="clickCircle" />
+		    cx={this.props.x} cy={this.props.y} onClick={e => this.onClick(e)} style={{cursor: "pointer"}} key="clickCircle" />
 	);
 	return fragment;
     }
