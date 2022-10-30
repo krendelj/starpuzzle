@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import React from 'react';
 import ValuesPanel from './ValuesPanel';
@@ -26,28 +25,60 @@ class App extends React.Component {
     }
 
     onFreeValueClick(index, value) {
-	this.setState((state, props) => { return {
-	    selectedFreeValue: value
-	}});
+	this.setState((state, props) => {
+	    let newFreeValues = [...state.freeValues];
+	    let newNStarConfiguration = [...state.nStarConfiguration];
+	    let newSelectedFreeValue = -1;
+	    let newSelectedNStarValue = -1;
+	    if (state.selectedNStarValue === -1) {
+		newSelectedFreeValue = value;
+	    }
+	    else {
+		newNStarConfiguration[newNStarConfiguration.indexOf(
+		    state.selectedNStarValue)] = value;
+		newFreeValues.push(state.selectedNStarValue);
+	    }
+	    newFreeValues.sort((a, b) => a - b);
+	    return {
+		freeValues: newFreeValues,
+		selectedFreeValue: newSelectedFreeValue,
+		nStarConfiguration: newNStarConfiguration,
+		selectedNStarValue: newSelectedNStarValue
+	    };
+	});
     }
 
     onNStarValueClick(index, value) {
 	this.setState((state, props) => {
-	    if (value === -1 && state.selectedFreeValue !== -1) {
-		let newFreeValues = [...state.freeValues];
-		newFreeValues.splice(newFreeValues.indexOf(state.selectedFreeValue), 1);
-		let newNStarConfiguration = [...state.nStarConfiguration];
-		newNStarConfiguration[index] = state.selectedFreeValue;
-		return {
-		    freeValues: newFreeValues,
-		    selectedFreeValue: -1,
-		    nStarConfiguration: newNStarConfiguration,
-		    selectedNStarValue: -1
-		};
+	    let newFreeValues = [...state.freeValues];
+	    let newNStarConfiguration = [...state.nStarConfiguration];
+	    let newSelectedFreeValue = -1;
+	    let newSelectedNStarValue = -1;
+	    if (state.selectedNStarValue === -1) {
+		if (state.selectedFreeValue === -1) {
+		    newSelectedNStarValue = value;
+		}
+		else {
+		    newFreeValues.splice(newFreeValues.indexOf(state.selectedFreeValue), 1);
+		    newNStarConfiguration[index] = state.selectedFreeValue;
+		    if (value !== -1) {
+			newFreeValues.push(value);
+		    }
+		}
 	    }
-	    else return {
-		selectedFreeValue: -1,
-		selectedNStarValue: value
+	    else {
+		if (value !== state.selectedNStarValue) {
+		    newNStarConfiguration[newNStarConfiguration.indexOf(
+			state.selectedNStarValue)] = value;
+		    newNStarConfiguration[index] = state.selectedNStarValue;
+		}
+	    }
+	    newFreeValues.sort((a, b) => a - b);
+	    return {
+		freeValues: newFreeValues,
+		selectedFreeValue: newSelectedFreeValue,
+		nStarConfiguration: newNStarConfiguration,
+		selectedNStarValue: newSelectedNStarValue
 	    };
 	});
     }
@@ -68,8 +99,6 @@ class App extends React.Component {
 										      this.state.selectedNStarValue,
 										      this.onNStarValueClick)} />
 		</svg>	    
-		<br />
-		<img src={logo} className="App-logo" alt="logo" />
 	    </div>
 	);
     }
