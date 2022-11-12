@@ -27,6 +27,36 @@ class NStarLogic {
 	    values.push(-1);
 	return values;
     }
+
+    getDesiredSum() {
+	return 4 * this.n + 2;
+    }
+
+    getSumForIndexForward(i, configuration) {
+
+	let normalizeIndex = (index) =>
+	    index < 0 ? index + this.n * 2 :
+	    index >= this.n * 2 ? index - this.n * 2 :
+	    index;
+
+	let getConfiguration = (index) => configuration[normalizeIndex(index)];
+
+	let startIndex = i % 2 === 0 ? i : normalizeIndex(i - 3);
+
+	if (getConfiguration(startIndex) === -1
+	    || getConfiguration(startIndex + 1) === -1
+	    || getConfiguration(startIndex + 3) === -1
+	    || getConfiguration(startIndex + 4) === -1) {
+	    return -1;
+	}
+	else {
+	    return getConfiguration(startIndex)
+		+ getConfiguration(startIndex + 1)
+		+ getConfiguration(startIndex + 3)
+		+ getConfiguration(startIndex + 4);
+	}
+	
+    }
 }
 
 export default NStarLogic;

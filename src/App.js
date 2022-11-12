@@ -34,9 +34,6 @@ class App extends React.Component {
 		newSelectedFreeValue = value;
 	    }
 	    else {
-		if (value !== -1) {
-		    newFreeValues.splice(index, 1);
-		}
 		newNStarConfiguration[newNStarConfiguration.indexOf(
 		    state.selectedNStarValue)] = value;
 		newFreeValues.push(state.selectedNStarValue);
@@ -94,7 +91,9 @@ class App extends React.Component {
 				 selectedFreeValue={this.state.selectedFreeValue} nStarLogic={this.nStarLogic} onClick={this.onFreeValueClick}
 				 yOffset={0} />
 		    <NStarPlot width={this.state.nStarCanvasProperties.width} top={100} radius={100}
-			       nStarLogic={this.nStarLogic} plotter={new PerimeterPlotter()} />
+			       nStarLogic={this.nStarLogic} plotter={new PerimeterPlotter(this.state.nStarCanvasProperties,
+											  this.nStarLogic,
+											  this.state.nStarConfiguration)} />
 		    <NStarPlot width={this.state.nStarCanvasProperties.width} top={100} radius={100}
 			       nStarLogic={this.nStarLogic} plotter={new SlotsPlotter(this.state.nStarCanvasProperties,
 										      this.nStarLogic,

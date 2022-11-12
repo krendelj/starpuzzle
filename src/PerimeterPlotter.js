@@ -1,4 +1,10 @@
 class PerimeterPlotter {
+    constructor(nStarCanvasProperties, nStarLogic, nStarConfiguration) {
+	this.nStarCanvasProperties = nStarCanvasProperties;
+	this.nStarLogic = nStarLogic;
+	this.nStarConfiguration = nStarConfiguration;
+    }
+    
     init(radius, xp, yp) {
 	this.radius = radius;
 	this.xp = xp;
@@ -14,7 +20,15 @@ class PerimeterPlotter {
 	let yp = this.yp;
 	this.xp = xn;
 	this.yp = yn;
-	return <line x1={xp} y1={yp} x2={xn} y2={yn} stroke="black" key={i} />
+	let sum = this.nStarLogic.getSumForIndexForward(i, this.nStarConfiguration);
+	let isDesiredSum = sum === -1 || sum !== this.nStarLogic.getDesiredSum(); 
+	let strokeColor = isDesiredSum
+	    ? this.nStarCanvasProperties.normalEdgeColor
+	    : this.nStarCanvasProperties.matchingEdgeColor;
+	let strokeWidth = isDesiredSum
+	    ? this.nStarCanvasProperties.normalEdgeStrokeWidth
+	    : this.nStarCanvasProperties.matchingEdgeStrokeWidth;
+	return <line x1={xp} y1={yp} x2={xn} y2={yn} stroke={strokeColor} strokeWidth={strokeWidth} key={i} />	    
     }
 }
 
