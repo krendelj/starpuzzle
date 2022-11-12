@@ -34,6 +34,9 @@ class App extends React.Component {
 		newSelectedFreeValue = value;
 	    }
 	    else {
+		if (value !== -1) {
+		    newFreeValues.splice(index, 1);
+		}
 		newNStarConfiguration[newNStarConfiguration.indexOf(
 		    state.selectedNStarValue)] = value;
 		newFreeValues.push(state.selectedNStarValue);
