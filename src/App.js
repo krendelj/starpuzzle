@@ -1,6 +1,5 @@
 import './App.css';
 import React from 'react';
-import Instructions from './Instructions';
 import ValuesPanel from './ValuesPanel';
 import NStarLogic from './NStarLogic';
 import NStarCanvasProperties from './NStarCanvasProperties';
@@ -10,21 +9,33 @@ import SlotsPlotter from './SlotsPlotter';
 
 class App extends React.Component {
 
-    nStarLogic = new NStarLogic(6)
-
     constructor(props) {
 	super(props);
 	this.state = {
 	    nStarCanvasProperties: new NStarCanvasProperties(),
-	    freeValues: this.nStarLogic.getValues(),
-	    selectedFreeValue: -1,
-	    nStarConfiguration: this.nStarLogic.getEmptyConfiguration(),
-	    selectedNStarValue: -1
-	};	
+	    ...this.resetState(6)
+	};
+	this.selectN = this.selectN.bind(this);
 	this.onFreeValueClick = this.onFreeValueClick.bind(this);
 	this.onNStarValueClick = this.onNStarValueClick.bind(this);
     }
 
+    resetState(n) {
+	let nStarLogic = new NStarLogic(n);
+	return {
+	    nStarLogic: nStarLogic,
+	    freeValues: nStarLogic.getValues(),
+	    selectedFreeValue: -1,
+	    nStarConfiguration: nStarLogic.getEmptyConfiguration(),
+	    selectedNStarValue: -1
+	};
+    }
+
+    selectN(event) {
+	this.setState(
+	    this.resetState(event.target.value));
+    }
+    
     onFreeValueClick(index, value) {
 	this.setState((state, props) => {
 	    let newFreeValues = [...state.freeValues];
@@ -94,21 +105,34 @@ class App extends React.Component {
 	    <div className="App">
 		<svg height={this.state.nStarCanvasProperties.height} width={this.state.nStarCanvasProperties.width}>
 		    <ValuesPanel nStarCanvasProperties={this.state.nStarCanvasProperties} freeValues={this.state.freeValues}
-				 selectedFreeValue={this.state.selectedFreeValue} nStarLogic={this.nStarLogic} onClick={this.onFreeValueClick}
+				 selectedFreeValue={this.state.selectedFreeValue} nStarLogic={this.state.nStarLogic} onClick={this.onFreeValueClick}
 				 yOffset={0} />
 		    <NStarPlot width={this.state.nStarCanvasProperties.width} top={100} radius={100}
-			       nStarLogic={this.nStarLogic} plotter={new PerimeterPlotter(this.state.nStarCanvasProperties,
-											  this.nStarLogic,
-											  this.state.nStarConfiguration)} />
+			       nStarLogic={this.state.nStarLogic} plotter={new PerimeterPlotter(this.state.nStarCanvasProperties,
+												this.state.nStarLogic,
+												this.state.nStarConfiguration)} />
 		    <NStarPlot width={this.state.nStarCanvasProperties.width} top={100} radius={100}
-			       nStarLogic={this.nStarLogic} plotter={new SlotsPlotter(this.state.nStarCanvasProperties,
-										      this.nStarLogic,
-										      this.state.nStarConfiguration,
-										      this.state.selectedNStarValue,
-										      this.onNStarValueClick)} />
+			       nStarLogic={this.state.nStarLogic} plotter={new SlotsPlotter(this.state.nStarCanvasProperties,
+											    this.state.nStarLogic,
+											    this.state.nStarConfiguration,
+											    this.state.selectedNStarValue,
+											    this.onNStarValueClick)} />
 		</svg>	    
-		<br />
-		<Instructions />
+		<br />		
+		<div style={{width: '300px', marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
+		    You are to arrange the numbers in the vertices of the star, so that the totals of the four numbers on
+		    each straight line are all equal to each other.
+		    <br />
+		    Choose the number of vertices:&nbsp;
+		    <select value={this.state.nStarLogic.n} onChange={this.selectN}>
+			<option value="6">12</option>
+			<option value="7">14</option>
+			<option value="9">18</option>
+		    </select>
+		    <br />
+		    The sum you are going for is: {this.state.nStarLogic.getDesiredSum()}.
+		</div>
+		
 	    </div>
 	);
     }
