@@ -187,8 +187,8 @@ class App extends React.Component {
     render() {
 	return (
 	    <div className="App">
-		<Link to="/">en</Link>&nbsp;
-		<Link to="/lv">lv</Link>&nbsp;
+		<Link to="/">en</Link>&ensp;
+		<Link to="/lv">lv</Link>&ensp;
 		<Link to="/ru">ru</Link>
 		<br />
 		<svg height={this.state.nStarCanvasProperties.height} width={this.state.nStarCanvasProperties.width}>
@@ -210,7 +210,7 @@ class App extends React.Component {
 		<div style={{width: '300px', marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
 		    {this.resources.conditions}
 		    <br />
-		    {this.resources.chooseTheNumberOfVertices}&nbsp;
+		    {this.resources.chooseTheNumberOfVertices}&ensp;
 		    <select value={this.state.nStarLogic.n} onChange={this.selectN}>
 			<option value="6">12</option>
 			<option value="7">14</option>
