@@ -130,7 +130,7 @@ class App extends React.Component {
 			<option value="9">18</option>
 		    </select>
 		    <br />
-		    The sum you are going for is: {this.state.nStarLogic.getDesiredSum()}.
+		    The total you are going for is: {this.state.nStarLogic.getDesiredSum()}.
 		</div>
 		
 	    </div>
