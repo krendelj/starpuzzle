@@ -1,6 +1,6 @@
 class NStarCanvasProperties {
     width = 300;
-    height = 400;
+    height = 350;
     slotTapRadius = 15;
     slotCircleDistance = 0;
     slotCircleRadius = 3;

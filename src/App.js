@@ -1,5 +1,6 @@
 import './App.css';
 import React from 'react';
+import Instructions from './Instructions';
 import ValuesPanel from './ValuesPanel';
 import NStarLogic from './NStarLogic';
 import NStarCanvasProperties from './NStarCanvasProperties';
@@ -106,6 +107,8 @@ class App extends React.Component {
 										      this.state.selectedNStarValue,
 										      this.onNStarValueClick)} />
 		</svg>	    
+		<br />
+		<Instructions />
 	    </div>
 	);
     }
