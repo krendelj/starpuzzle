@@ -25,9 +25,9 @@ class App extends React.Component {
 	return {
 	    nStarLogic: nStarLogic,
 	    freeValues: nStarLogic.getValues(),
-	    selectedFreeValue: -1,
+	    selectedFreeIndex: -1,
 	    nStarConfiguration: nStarLogic.getEmptyConfiguration(),
-	    selectedNStarValue: -1
+	    selectedNStarIndex: -1
 	};
     }
 
@@ -37,65 +37,92 @@ class App extends React.Component {
     }
     
     onFreeValueClick(index, value) {
-	this.setState((state, props) => {
+	this.setState((state) => {
 	    let newFreeValues = [...state.freeValues];
 	    let newNStarConfiguration = [...state.nStarConfiguration];
-	    let newSelectedFreeValue = -1;
-	    let newSelectedNStarValue = -1;
-	    if (state.selectedNStarValue === -1) {
-		if (value !== state.selectedFreeValue) {
-		    newSelectedFreeValue = value;
+	    let newSelectedFreeIndex = -1;
+	    let newSelectedNStarIndex = -1;
+	    if (state.selectedFreeIndex === -1) {
+		if (state.selectedNStarIndex === -1
+		    || (value === -1 && newNStarConfiguration[state.selectedNStarIndex] === -1))
+		{
+		    newSelectedFreeIndex = index;
+		}
+		else {
+		    if (value !== -1) {
+			newFreeValues.splice(index, 1);
+		    }
+		    if (newNStarConfiguration[state.selectedNStarIndex] !== -1) {
+			newFreeValues.push(newNStarConfiguration[state.selectedNStarIndex]);
+		    }
+		    newNStarConfiguration[state.selectedNStarIndex] = value;
 		}
 	    }
 	    else {
-		if (value !== -1) {
-		    newFreeValues.splice(index, 1);
+		if (state.selectedFreeIndex !== index) {
+		    newSelectedFreeIndex = index;
 		}
-		newNStarConfiguration[newNStarConfiguration.indexOf(
-		    state.selectedNStarValue)] = value;
-		newFreeValues.push(state.selectedNStarValue);
 	    }
+	    
 	    newFreeValues.sort((a, b) => a - b);
 	    return {
 		freeValues: newFreeValues,
-		selectedFreeValue: newSelectedFreeValue,
+		selectedFreeIndex: newSelectedFreeIndex,
 		nStarConfiguration: newNStarConfiguration,
-		selectedNStarValue: newSelectedNStarValue
+		selectedNStarIndex: newSelectedNStarIndex
 	    };
 	});
     }
 
     onNStarValueClick(index, value) {
-	this.setState((state, props) => {
+	this.setState((state) => {
 	    let newFreeValues = [...state.freeValues];
 	    let newNStarConfiguration = [...state.nStarConfiguration];
-	    let newSelectedFreeValue = -1;
-	    let newSelectedNStarValue = -1;
-	    if (state.selectedNStarValue === -1) {
-		if (state.selectedFreeValue === -1) {
-		    newSelectedNStarValue = value;
+	    let newSelectedFreeIndex = -1;
+	    let newSelectedNStarIndex = -1;
+	    if (state.selectedNStarIndex === -1) {
+		if (state.selectedFreeIndex === -1) {
+		    newSelectedNStarIndex = index;
 		}
 		else {
-		    newFreeValues.splice(newFreeValues.indexOf(state.selectedFreeValue), 1);
-		    newNStarConfiguration[index] = state.selectedFreeValue;
-		    if (value !== -1) {
-			newFreeValues.push(value);
+		    if (state.selectedFreeIndex < newFreeValues.length) {
+			newFreeValues.splice(state.selectedFreeIndex, 1);
+			newNStarConfiguration[index] = state.freeValues[state.selectedFreeIndex];
+			if (value !== -1) {
+			    newFreeValues.push(value);
+			}			
+		    }
+		    else {
+			if (value === -1)
+			{
+			    newSelectedNStarIndex = index;
+			}
+			else {
+			    newNStarConfiguration[index] = -1;
+			    newFreeValues.push(value);
+			}
 		    }
 		}
 	    }
 	    else {
-		if (value !== state.selectedNStarValue) {
-		    newNStarConfiguration[newNStarConfiguration.indexOf(
-			state.selectedNStarValue)] = value;
-		    newNStarConfiguration[index] = state.selectedNStarValue;
+		if (state.selectedNStarIndex !== index) {
+		    let selectedValue = newNStarConfiguration[state.selectedNStarIndex];
+		    if (value !== -1 || selectedValue !== -1)
+		    {
+			newNStarConfiguration[index] = selectedValue;
+			newNStarConfiguration[state.selectedNStarIndex] = value;
+		    }
+		    else {
+			newSelectedNStarIndex = index;
+		    }
 		}
 	    }
 	    newFreeValues.sort((a, b) => a - b);
 	    return {
 		freeValues: newFreeValues,
-		selectedFreeValue: newSelectedFreeValue,
+		selectedFreeIndex: newSelectedFreeIndex,
 		nStarConfiguration: newNStarConfiguration,
-		selectedNStarValue: newSelectedNStarValue
+		selectedNStarIndex: newSelectedNStarIndex
 	    };
 	});
     }
@@ -105,7 +132,7 @@ class App extends React.Component {
 	    <div className="App">
 		<svg height={this.state.nStarCanvasProperties.height} width={this.state.nStarCanvasProperties.width}>
 		    <ValuesPanel nStarCanvasProperties={this.state.nStarCanvasProperties} freeValues={this.state.freeValues}
-				 selectedFreeValue={this.state.selectedFreeValue} nStarLogic={this.state.nStarLogic} onClick={this.onFreeValueClick}
+				 selectedFreeIndex={this.state.selectedFreeIndex} nStarLogic={this.state.nStarLogic} onClick={this.onFreeValueClick}
 				 yOffset={0} />
 		    <NStarPlot width={this.state.nStarCanvasProperties.width} top={100} radius={100}
 			       nStarLogic={this.state.nStarLogic} plotter={new PerimeterPlotter(this.state.nStarCanvasProperties,
@@ -115,7 +142,7 @@ class App extends React.Component {
 			       nStarLogic={this.state.nStarLogic} plotter={new SlotsPlotter(this.state.nStarCanvasProperties,
 											    this.state.nStarLogic,
 											    this.state.nStarConfiguration,
-											    this.state.selectedNStarValue,
+											    this.state.selectedNStarIndex,
 											    this.onNStarValueClick)} />
 		</svg>	    
 		<br />		

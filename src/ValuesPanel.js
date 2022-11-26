@@ -20,14 +20,17 @@ class ValuesPanel extends React.Component {
 	    let v;
 	    if (k < this.props.freeValues.length) {
 		v = this.props.freeValues[k];
-		if (this.props.selectedFreeValue === v)
+		if (this.props.selectedFreeIndex === k)
 		    selectionState = ValueSlot.VALUE_SELECTED;
 		else
 		    selectionState = ValueSlot.VALUE;
 	    }
 	    else {
 		v = -1;
-		selectionState = ValueSlot.EMPTY;
+		if (this.props.selectedFreeIndex === k)
+		    selectionState = ValueSlot.EMPTY_SELECTED;
+		else
+		    selectionState = ValueSlot.EMPTY;
 	    }
 
 	    items.push(
