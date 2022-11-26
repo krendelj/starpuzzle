@@ -1,5 +1,6 @@
 import './App.css';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import ValuesPanel from './ValuesPanel';
 import NStarLogic from './NStarLogic';
 import NStarCanvasProperties from './NStarCanvasProperties';
@@ -11,6 +12,8 @@ class App extends React.Component {
 
     constructor(props) {
 	super(props);
+	this.lang = this.selectLang(props.lang);
+	this.resources = this.texts();
 	this.state = {
 	    nStarCanvasProperties: new NStarCanvasProperties(),
 	    ...this.resetState(6)
@@ -127,9 +130,67 @@ class App extends React.Component {
 	});
     }
 
+    selectLang(lang) {
+	switch (lang.toLowerCase()) {
+	case "lv":
+	case "ru":
+	    return lang.toLowerCase();
+	default:
+	    return "en";
+	}
+    }
+
+    texts() {
+	switch (this.lang) {
+	case "en":
+	    return {
+		conditions: <>
+				You are to arrange the numbers in the vertices of the star, so that the totals of the four numbers on
+				each straight line are all equal to each other.
+			    </>,
+		chooseTheNumberOfVertices: <>
+					       Choose the number of vertices:
+					   </>,
+		theTotalIs: <>
+				The total you are going for is:
+			    </>
+	    };
+	case "lv":
+	    return {
+		conditions: <>
+				Jāizvieto skaitļi zvaigzdnes virsotnēs tā, lai visas četru skaitļu, kas atrodas uz taisnas līnijas,
+				summas ir vienādas savā starpā.
+			    </>,
+		chooseTheNumberOfVertices: <>
+					       Izvēlēties virsotņu skaitu:
+					   </>,
+		theTotalIs: <>
+				Summa, kas jāsasniedz, ir:
+			    </>
+	    };
+	case "ru" :
+	    return {
+		conditions: <>
+				Расположить числа в вершинах звезды так, чтобы суммы каждых четырёх чисел, находящихся на одной прямой,
+				были равны между собой.
+			    </>,
+		chooseTheNumberOfVertices: <>
+					       Выбрать количество вершин:
+					   </>,
+		theTotalIs: <>
+				Сумма, которую надо набрать:
+			    </>
+	    };
+	}
+    }
+
     render() {
 	return (
 	    <div className="App">
+		<Link to="/">en</Link>&nbsp;
+		<Link to="/lv">lv</Link>&nbsp;
+		<Link to="/ru">ru</Link>
+		<br />
 		<svg height={this.state.nStarCanvasProperties.height} width={this.state.nStarCanvasProperties.width}>
 		    <ValuesPanel nStarCanvasProperties={this.state.nStarCanvasProperties} freeValues={this.state.freeValues}
 				 selectedFreeIndex={this.state.selectedFreeIndex} nStarLogic={this.state.nStarLogic} onClick={this.onFreeValueClick}
@@ -147,17 +208,16 @@ class App extends React.Component {
 		</svg>	    
 		<br />		
 		<div style={{width: '300px', marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
-		    You are to arrange the numbers in the vertices of the star, so that the totals of the four numbers on
-		    each straight line are all equal to each other.
+		    {this.resources.conditions}
 		    <br />
-		    Choose the number of vertices:&nbsp;
+		    {this.resources.chooseTheNumberOfVertices}&nbsp;
 		    <select value={this.state.nStarLogic.n} onChange={this.selectN}>
 			<option value="6">12</option>
 			<option value="7">14</option>
 			<option value="9">18</option>
 		    </select>
 		    <br />
-		    The total you are going for is: {this.state.nStarLogic.getDesiredSum()}.
+		    {this.resources.theTotalIs} {this.state.nStarLogic.getDesiredSum()}.
 		</div>
 		
 	    </div>

@@ -3,11 +3,32 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {
+    createBrowserRouter,
+    RouterProvider,
+    useParams,
+} from 'react-router-dom';
 
+function Lang() {
+    let { lang } = useParams();
+    return <App lang={lang} key={lang} />
+}
+
+const router = createBrowserRouter([
+    {
+	path: "/",
+	element: <App lang="en" />,
+    },
+    {
+	path: "/:lang",
+	element: <Lang />,
+    }
+]);
+	
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+      <RouterProvider router={router} />
   </React.StrictMode>
 );
 
